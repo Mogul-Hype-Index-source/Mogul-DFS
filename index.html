@@ -273,8 +273,10 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 .poster::after {
   content: 'TMDb'; position: absolute; bottom: 4px; right: 5px; font-size: 7px;
-  color: var(--text-dim); font-family: 'Inter', sans-serif; letter-spacing: 0;
+  color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif; letter-spacing: 0;
+  background: rgba(0,0,0,0.55); padding: 1px 4px; border-radius: 2px;
 }
+.poster.has-img { color: transparent; }
 .clash-char {
   font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1.5px;
   color: var(--text); line-height: 1.1;
@@ -502,6 +504,74 @@ button { font-family: inherit; cursor: pointer; border: none; }
   transition: all .2s;
 }
 .view-picks-btn:hover { background: var(--gold); color: #000; }
+
+/* FULL CARD */
+.card.full { box-shadow: 0 0 0 2px var(--gold), 0 10px 30px rgba(245,166,35,0.3); }
+.card.full .fill-fill { background: linear-gradient(90deg, var(--gold), #ffcd66) !important; }
+.badge.full-badge { background: var(--gold); color: #000; }
+@keyframes goldFlash {
+  0%, 100% { box-shadow: 0 0 0 2px var(--gold), 0 10px 30px rgba(245,166,35,0.3); }
+  50% { box-shadow: 0 0 0 4px var(--gold), 0 0 50px rgba(245,166,35,0.7); }
+}
+.card.full-flash { animation: goldFlash 0.6s ease 3; }
+
+/* WEEKEND OPENS BUTTON */
+.weekend-locked-btn {
+  background: var(--bg-3); color: var(--gold); border: 1px dashed var(--gold);
+  padding: 7px 12px; border-radius: 6px;
+  font-weight: 700; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
+  cursor: not-allowed; line-height: 1.3; text-align: center; font-family: inherit;
+}
+.weekend-locked-btn .ctd { display: block; font-size: 12px; color: var(--text); font-weight: 800; margin-top: 2px; letter-spacing: 1px; }
+
+/* WINNER BANNER */
+.winner-banner {
+  position: fixed; top: 80px; left: 50%; transform: translate(-50%, -200%);
+  background: linear-gradient(90deg, #1a1a1a 0%, #2a1f0a 50%, #1a1a1a 100%);
+  border: 1px solid var(--gold); border-radius: 999px;
+  padding: 12px 24px; font-size: 13px; color: var(--text);
+  box-shadow: 0 10px 40px rgba(245,166,35,0.3);
+  z-index: 500; transition: transform .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+}
+.winner-banner.show { transform: translate(-50%, 0); }
+.winner-banner strong { color: var(--gold); }
+@media (max-width: 600px) {
+  .winner-banner { font-size: 11px; padding: 10px 16px; top: 70px; }
+}
+
+/* LIVE ENTRY FEED */
+.entry-feed {
+  position: fixed; bottom: 16px; right: 16px; width: 280px; max-width: calc(100vw - 32px);
+  background: rgba(17,17,17,0.94); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 12px;
+  z-index: 400; overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+[data-theme="light"] .entry-feed { background: rgba(255,255,255,0.96); }
+.entry-feed.collapsed .entry-feed-list { display: none; }
+.entry-feed-head {
+  padding: 10px 14px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--gold); border-bottom: 1px solid var(--border); display: flex;
+  justify-content: space-between; align-items: center; font-weight: 700; cursor: pointer;
+}
+.entry-feed-head .live-pulse { width: 6px; height: 6px; }
+.entry-feed-list { max-height: 220px; overflow: hidden; }
+.entry-feed-item {
+  padding: 10px 14px; font-size: 11px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border); line-height: 1.4;
+  animation: feedSlide .4s ease;
+}
+.entry-feed-item:last-child { border-bottom: none; }
+.entry-feed-item strong { color: var(--text); font-weight: 700; }
+.entry-feed-item .gold { color: var(--gold); font-weight: 700; }
+@keyframes feedSlide {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 600px) {
+  .entry-feed { width: 240px; bottom: 12px; right: 12px; }
+}
 
 /* FOOTER */
 .footer {
@@ -840,6 +910,18 @@ button { font-family: inherit; cursor: pointer; border: none; }
   </div>
 </footer>
 
+<!-- WINNER BANNER -->
+<div class="winner-banner" id="winnerBanner">🏆 <strong>Player247</strong> just won <strong>$45</strong> in <strong>Hype Call H2H</strong></div>
+
+<!-- LIVE ENTRY FEED -->
+<div class="entry-feed" id="entryFeed">
+  <div class="entry-feed-head" id="entryFeedHead">
+    <span><span class="live-pulse"></span> Live Entries</span>
+    <span id="entryFeedToggle">−</span>
+  </div>
+  <div class="entry-feed-list" id="entryFeedList"></div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
@@ -917,10 +999,10 @@ const contests = {
   clash: [
     { name: 'Character Clash', sub: '30-day Hype Score momentum', type: 'clash', badgeText: 'CLASH', entry: 5,  prize: 8.80, max: 2, filled: 1, timer: 10800,
       clash: { left:  { character: 'BATMAN',    actor: 'Robert Pattinson', film: 'The Batman 2' },
-               right: { character: 'JOKER',     actor: 'Barry Keoghan',    film: 'The Batman 2' } } },
+               right: { character: 'SUPERMAN',  actor: 'David Corenswet',  film: 'Superman' } } },
     { name: 'Character Clash', sub: '30-day Hype Score momentum', type: 'clash', badgeText: 'CLASH', entry: 10, prize: 17.60, max: 2, filled: 1, timer: 10800,
       clash: { left:  { character: 'WOLVERINE', actor: 'Hugh Jackman',  film: 'Avengers: Doomsday' },
-               right: { character: 'DEADPOOL',  actor: 'Ryan Reynolds', film: 'Avengers: Doomsday' } } },
+               right: { character: 'DEADPOOL',  actor: 'Ryan Reynolds', film: 'Deadpool & Wolverine' } } },
     { name: 'Character Clash', sub: '30-day Hype Score momentum', type: 'clash', badgeText: 'CLASH', entry: 25, prize: 45, max: 2, filled: 0, timer: 10800,
       clash: { left:  { character: 'ETHAN HUNT', actor: 'Tom Cruise',   film: 'Mission: Impossible 9' },
                right: { character: 'JAMES BOND', actor: 'Aaron Taylor-Johnson', film: 'Bond 26' } } },
@@ -935,11 +1017,11 @@ const contests = {
   ],
   star: [
     { name: 'Star Power H2H', sub: 'Performance Score head-to-head', type: 'starpower', badgeText: 'STAR', entry: 5,  prize: 8.80, max: 2,  filled: 1,  timer: 12600,
-      starpower: { actor: 'Timothée Chalamet', character: 'Paul Atreides', film: 'Dune: Part Three' } },
+      starpower: { actor: 'Ryan Gosling',   character: 'Ryland Grace',   film: 'Project Hail Mary' } },
     { name: 'Star Power H2H', sub: 'Performance Score head-to-head', type: 'starpower', badgeText: 'STAR', entry: 10, prize: 17.60, max: 2, filled: 1,  timer: 12600,
-      starpower: { actor: 'Zendaya', character: 'Chani', film: 'Dune: Part Three' } },
+      starpower: { actor: 'Jaafar Jackson', character: 'Michael Jackson',film: 'Michael' } },
     { name: 'Star Power GPP', sub: 'Top 5 cash', type: 'starpower', badgeText: 'STAR', entry: 5, prize: 220, max: 50, filled: 23, timer: 18000,
-      starpower: { actor: 'Pedro Pascal', character: 'Reed Richards', film: 'Marvel: First Steps' } },
+      starpower: { actor: 'Zendaya',        character: 'Lilah',          film: 'The Drama' } },
   ],
   weekend: [
     { name: 'Weekend Surge $5',  sub: 'Most Hype Score gained Fri–Sun', type: 'weekend', badgeText: 'WKND', entry: 5,  prize: 220, max: 50, filled: 22, timer: 21600 },
@@ -1013,23 +1095,33 @@ function renderCard(c, idx, gridId) {
   const starHtml = c.starpower
     ? `<div class="starpower-meta"><strong>${c.starpower.actor}</strong> as ${c.starpower.character}<br>in <em>${c.starpower.film}</em></div>`
     : '';
+  function posterEl(film, url, extra) {
+    const style = url
+      ? `background-image:url('${url}');background-size:cover;background-position:center;${extra||''}`
+      : (extra||'');
+    const inner = url ? '' : (film || '').toUpperCase();
+    return `<div class="poster ${url?'has-img':''}" style="${style}">${inner}</div>`;
+  }
   const clashHtml = c.clash
     ? `<div class="clash-arena">
         <div class="clash-side">
-          <div class="poster">${c.clash.left.film.toUpperCase()}</div>
+          ${posterEl(c.clash.left.film, c.clash.left.posterUrl)}
           <div class="clash-char">${c.clash.left.character}</div>
           <div class="clash-portrayed">Portrayed by ${c.clash.left.actor}<br>· ${c.clash.left.film}</div>
         </div>
         <div class="vs-divider">VS</div>
         <div class="clash-side">
-          <div class="poster">${c.clash.right.film.toUpperCase()}</div>
+          ${posterEl(c.clash.right.film, c.clash.right.posterUrl)}
           <div class="clash-char">${c.clash.right.character}</div>
           <div class="clash-portrayed">Portrayed by ${c.clash.right.actor}<br>· ${c.clash.right.film}</div>
         </div>
       </div>`
     : '';
-  const franchisePoster = c.poster
-    ? `<div class="poster" style="max-width:90px;margin-top:10px;">${c.poster}</div>`
+  const franchisePoster = (c.poster || c.posterUrl)
+    ? posterEl(c.poster || '', c.posterUrl, 'max-width:90px;margin-top:10px;')
+    : '';
+  const starPoster = c.starpower && c.starpower.posterUrl
+    ? `<div style="margin-top:10px;">${posterEl(c.starpower.film, c.starpower.posterUrl, 'max-width:90px;')}</div>`
     : '';
   const isActorCard = !!(c.starpower || c.clash);
   let legalText;
@@ -1058,7 +1150,7 @@ function renderCard(c, idx, gridId) {
   return `
     <div class="card ${locked?'locked':''}" data-grid="${gridId}" data-idx="${idx}">
       <div class="card-head">
-        <div class="card-name">${c.name}<span class="sub">${c.sub}</span>${starHtml}${franchisePoster}</div>
+        <div class="card-name">${c.name}<span class="sub">${c.sub}</span>${starHtml}${starPoster}${franchisePoster}</div>
         <div class="badge-stack" style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
           <span class="badge ${c.type}">${c.badgeText}</span>
           ${newBadge}${almostBadge}${liveBadge}${hotBadge}
@@ -1149,13 +1241,14 @@ setInterval(() => {
     list.forEach((c, i) => {
       if (c._locked) return;
       if (c.unlimited) { c.filled += Math.floor(Math.random() * 3); updateCard(gridId, i); return; }
-      if (c.filled < c.max && Math.random() < 0.35) {
-        c.filled = Math.min(c.max, c.filled + 1);
+      if (c.filled < c.max && Math.random() < 0.55) {
+        const bump = 1 + Math.floor(Math.random() * 2); // 1 or 2
+        c.filled = Math.min(c.max, c.filled + bump);
         updateCard(gridId, i);
       }
     });
   });
-}, 2500);
+}, 3500);
 
 // flash random card
 setInterval(() => {
@@ -1170,11 +1263,11 @@ setInterval(() => {
 // players online counter
 let players = 1247;
 setInterval(() => {
-  players += Math.floor(Math.random() * 11) - 5;
+  players += Math.floor(Math.random() * 21) - 10;
   if (players < 1100) players = 1100 + Math.floor(Math.random() * 50);
   if (players > 1600) players = 1600 - Math.floor(Math.random() * 50);
   document.getElementById('playersOnline').textContent = players.toLocaleString();
-}, 1800);
+}, 4000);
 
 // countdown timers (cards)
 setInterval(() => {
@@ -1211,13 +1304,13 @@ setInterval(() => {
   el.textContent = n;
 }, 4000);
 
-// prize pool tick
+// prize pool tick — $5-25 every 10s
 setInterval(() => {
   const el = document.getElementById('prizePool');
   let n = parseInt(el.textContent.replace(/,/g, ''));
-  n += Math.floor(Math.random() * 25);
+  n += 5 + Math.floor(Math.random() * 21);
   el.textContent = n.toLocaleString();
-}, 3500);
+}, 10000);
 
 // ============ NAV ============
 function showPage(p) {
@@ -1294,14 +1387,14 @@ stateSelect.addEventListener('change', () => {
 
 // ============ STAR POWER RANKINGS ============
 const STAR_RANKINGS = [
-  { character: 'Paul Atreides',  actor: 'Timothée Chalamet', film: 'Dune: Part Three',   score: 94.2, delta: 2.1 },
-  { character: 'Chani',          actor: 'Zendaya',           film: 'Dune: Part Three',   score: 91.8, delta: 1.4 },
-  { character: 'Reed Richards',  actor: 'Pedro Pascal',      film: 'Marvel: First Steps',score: 89.5, delta: 3.2 },
-  { character: 'Wolverine',      actor: 'Hugh Jackman',      film: 'Avengers: Doomsday', score: 88.9, delta: 0.8 },
-  { character: 'Deadpool',       actor: 'Ryan Reynolds',     film: 'Avengers: Doomsday', score: 87.3, delta: 1.1 },
-  { character: 'Ethan Hunt',     actor: 'Tom Cruise',        film: 'Mission: Impossible 9', score: 84.6, delta: -0.4 },
-  { character: 'Jake Sully',     actor: 'Sam Worthington',   film: 'Avatar 4',           score: 82.1, delta: 0.6 },
-  { character: 'The Batman',     actor: 'Robert Pattinson',  film: 'The Batman 2',       score: 80.4, delta: 1.9 },
+  { character: 'Ryland Grace',   actor: 'Ryan Gosling',     film: 'Project Hail Mary',  score: 94.2, delta: 2.1 },
+  { character: 'Michael Jackson',actor: 'Jaafar Jackson',   film: 'Michael',            score: 91.8, delta: 1.4 },
+  { character: 'Lilah',          actor: 'Zendaya',          film: 'The Drama',          score: 89.5, delta: 3.2 },
+  { character: 'Supergirl',      actor: 'Milly Alcock',     film: 'Supergirl: Woman of Tomorrow', score: 88.9, delta: 0.8 },
+  { character: 'Wolverine',      actor: 'Hugh Jackman',     film: 'Deadpool & Wolverine', score: 87.3, delta: 1.1 },
+  { character: 'Deadpool',       actor: 'Ryan Reynolds',    film: 'Deadpool & Wolverine', score: 86.4, delta: 0.6 },
+  { character: 'Superman',       actor: 'David Corenswet',  film: 'Superman',           score: 84.6, delta: -0.4 },
+  { character: 'The Batman',     actor: 'Robert Pattinson', film: 'The Batman 2',       score: 80.4, delta: 1.9 },
 ];
 function renderStarRankings() {
   const wrap = document.getElementById('starRankList');
@@ -1515,6 +1608,211 @@ document.addEventListener('click', (e) => {
 });
 
 picksModal.addEventListener('transitionend', () => {});
+
+// ============ LIVE HYPE INDEX DATA ============
+let liveData = null;
+fetch('https://mogul-hype-index-source.github.io/Hype-index/data/v2.json', { cache: 'no-store' })
+  .then(r => r.json())
+  .then(d => { liveData = d; applyLiveData(); })
+  .catch(e => console.warn('[Mogul] Hype Index live data unavailable:', e));
+
+function applyLiveData() {
+  if (!liveData || !liveData.movies || !liveData.movies.length) return;
+  const top = liveData.movies[0];
+  const top2 = liveData.movies[1] || top;
+  // Hype Call subtitles use real top film
+  contests.hypeCall.forEach(c => {
+    if (c.badgeText === 'H2H' || c.badgeText === '50/50' || c.badgeText === 'GPP') {
+      c.sub = `Will ${top.title} Hype Score rise or fall today?`;
+    }
+  });
+  // Hype Surge subtitles
+  contests.hypeSurge.forEach(c => {
+    c.sub = `Most mentions in 60 min · Leader: ${top.title}`;
+  });
+
+  // Build poster lookup map by lowercased title
+  const posterMap = {};
+  liveData.movies.forEach(m => {
+    if (m.title && m.poster_url) posterMap[m.title.toLowerCase().trim()] = m.poster_url;
+  });
+  function lookupPoster(title) {
+    if (!title) return null;
+    const k = title.toLowerCase().trim();
+    if (posterMap[k]) return posterMap[k];
+    // try fuzzy: contains
+    for (const key in posterMap) {
+      if (key.includes(k) || k.includes(key)) return posterMap[key];
+    }
+    return null;
+  }
+
+  // Resolve posters for franchise/clash/star
+  contests.franchise.forEach(c => {
+    const film = c.name.replace(/^Franchise Rank:\s*/i, '').trim();
+    const url = lookupPoster(film);
+    if (url) c.posterUrl = url;
+  });
+  contests.clash.forEach(c => {
+    if (!c.clash) return;
+    const lu = lookupPoster(c.clash.left.film);
+    const ru = lookupPoster(c.clash.right.film);
+    if (lu) c.clash.left.posterUrl = lu;
+    if (ru) c.clash.right.posterUrl = ru;
+  });
+  contests.star.forEach(c => {
+    if (!c.starpower) return;
+    const u = lookupPoster(c.starpower.film);
+    if (u) c.starpower.posterUrl = u;
+  });
+
+  // Re-render the affected grids (and Hype Call/Surge for new subs)
+  renderGrid('hypeCallGrid',  contests.hypeCall);
+  renderGrid('hypeSurgeGrid', contests.hypeSurge);
+  renderGrid('franchiseGrid', contests.franchise);
+  renderGrid('clashGrid',     contests.clash);
+  renderGrid('starGrid',      contests.star);
+
+  // re-apply weekend lock state after re-render
+  applyWeekendLock();
+}
+
+// ============ WEEKEND COUNTDOWN ============
+function nextFridayUTC() {
+  const now = new Date();
+  const day = now.getUTCDay(); // 0=Sun .. 5=Fri .. 6=Sat
+  // days until Friday 00:00 UTC
+  let days = (5 - day + 7) % 7;
+  const target = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + days, 0, 0, 0));
+  if (target <= now) target.setUTCDate(target.getUTCDate() + 7);
+  return target;
+}
+function fmtFridayCountdown() {
+  const ms = nextFridayUTC() - new Date();
+  if (ms <= 0) return '00:00:00';
+  const totalSec = Math.floor(ms / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (d > 0) return `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function applyWeekendLock() {
+  const day = new Date().getDay();
+  const isWeekend = day === 5 || day === 6 || day === 0;
+  document.querySelectorAll('[data-grid="weekendGrid"]').forEach(card => {
+    const foot = card.querySelector('.card-foot');
+    if (!foot) return;
+    if (isWeekend) {
+      // ensure normal Enter button
+      if (!foot.querySelector('.enter-btn') && !foot.querySelector('.view-picks-btn')) {
+        const b = document.createElement('button');
+        b.className = 'enter-btn'; b.dataset.action = 'enter'; b.textContent = 'Enter';
+        const existing = foot.querySelector('.weekend-locked-btn');
+        if (existing) existing.replaceWith(b);
+      }
+    } else {
+      // replace enter with countdown button
+      const enter = foot.querySelector('.enter-btn') || foot.querySelector('.view-picks-btn');
+      if (enter && !foot.querySelector('.weekend-locked-btn')) {
+        const b = document.createElement('button');
+        b.className = 'weekend-locked-btn';
+        b.innerHTML = `Opens Friday 12:00 AM UTC<span class="ctd">${fmtFridayCountdown()}</span>`;
+        enter.replaceWith(b);
+      }
+    }
+  });
+}
+// override existing checkWeekend that grays out the section
+(function patchCheckWeekend(){
+  const sec = document.getElementById('weekendSection');
+  if (!sec) return;
+  sec.classList.remove('disabled');
+  const msg = document.getElementById('weekendMsg');
+  const day = new Date().getDay();
+  const isWeekend = day === 5 || day === 6 || day === 0;
+  if (msg) {
+    msg.innerHTML = isWeekend
+      ? `<div class="weekend-msg" style="border-left-color:var(--green);">🎬 Weekend Surge is LIVE — premium contests now open.</div>`
+      : `<div class="weekend-msg">⏳ Weekend Surge contests open <strong>Friday 12:00 AM UTC</strong>. Browse below; entries unlock automatically when the window opens.</div>`;
+  }
+  applyWeekendLock();
+})();
+// tick the weekend countdown buttons
+setInterval(() => {
+  document.querySelectorAll('.weekend-locked-btn .ctd').forEach(el => {
+    el.textContent = fmtFridayCountdown();
+  });
+}, 1000);
+
+// ============ FULL CARD DETECTION ============
+function maybeFlagFull(gridId, idx, c) {
+  if (c.unlimited) return;
+  if (c.filled < c.max) return;
+  if (c._fullFlagged) return;
+  c._fullFlagged = true;
+  const card = document.querySelector(`[data-grid="${gridId}"][data-idx="${idx}"]`);
+  if (!card) return;
+  card.classList.add('full', 'full-flash');
+  setTimeout(() => card.classList.remove('full-flash'), 2000);
+  const stack = card.querySelector('.badge-stack');
+  if (stack && !stack.querySelector('.badge.full-badge')) {
+    // remove almost-full
+    const a = stack.querySelector('.badge.almost'); if (a) a.remove();
+    const b = document.createElement('span');
+    b.className = 'badge full-badge';
+    b.textContent = 'FULL';
+    stack.appendChild(b);
+  }
+}
+setInterval(() => {
+  ALL_LISTS().forEach(([gid, list]) => {
+    list.forEach((c, i) => maybeFlagFull(gid, i, c));
+  });
+}, 600);
+
+// ============ WINNER BANNER ============
+const winnerBanner = document.getElementById('winnerBanner');
+function showWinnerBanner() {
+  // pick a random contest
+  const lists = ALL_LISTS();
+  const [gid, list] = lists[Math.floor(Math.random() * lists.length)];
+  const c = list[Math.floor(Math.random() * list.length)];
+  if (!c) return;
+  const playerNum = Math.floor(Math.random() * 9000) + 100;
+  const amt = c.free
+    ? '$' + (5 + Math.floor(Math.random() * 45))
+    : '$' + Math.floor(c.prize * (0.8 + Math.random() * 0.4));
+  winnerBanner.innerHTML = `🏆 <strong>Player${playerNum}</strong> just won <strong>${amt}</strong> in <strong>${c.name}</strong>`;
+  winnerBanner.classList.add('show');
+  setTimeout(() => winnerBanner.classList.remove('show'), 5000);
+}
+setTimeout(showWinnerBanner, 8000);
+setInterval(showWinnerBanner, 45000);
+
+// ============ LIVE ENTRY FEED ============
+const entryFeedList = document.getElementById('entryFeedList');
+const entryFeedRoot = document.getElementById('entryFeed');
+document.getElementById('entryFeedHead').addEventListener('click', () => {
+  entryFeedRoot.classList.toggle('collapsed');
+  document.getElementById('entryFeedToggle').textContent = entryFeedRoot.classList.contains('collapsed') ? '+' : '−';
+});
+function pushEntry() {
+  const lists = ALL_LISTS();
+  const [gid, list] = lists[Math.floor(Math.random() * lists.length)];
+  const c = list[Math.floor(Math.random() * list.length)];
+  if (!c) return;
+  const playerNum = Math.floor(Math.random() * 9000) + 100;
+  const entryStr = c.free ? 'FREE' : '$' + (c.entry < 10 ? c.entry.toFixed(2).replace(/\.00$/,'') : c.entry);
+  const item = document.createElement('div');
+  item.className = 'entry-feed-item';
+  item.innerHTML = `<strong>Player${playerNum}</strong> entered<br><span class="gold">${entryStr}</span> · ${c.name}`;
+  entryFeedList.insertBefore(item, entryFeedList.firstChild);
+  while (entryFeedList.children.length > 4) entryFeedList.removeChild(entryFeedList.lastChild);
+}
+for (let i = 0; i < 4; i++) pushEntry();
+setInterval(pushEntry, 3500 + Math.random() * 1500);
 
 // real-time score updates while picks panel is open
 setInterval(() => {
