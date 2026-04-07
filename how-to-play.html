@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mogul — How to Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  (function(){try{document.documentElement.setAttribute('data-theme',localStorage.getItem('mogul-theme')||'dark')}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  :root,[data-theme="dark"]{--bg:#080808;--bg-panel:#0a0a0a;--bg-3:#141414;--line:#1f1f1f;--line-2:#2a2a2a;--text:#fff;--text-strong:#fff;--text-secondary:#dddddd;--mute:#8a8a8a;--gold:#F5A623;--gold-pill-bg:#1a1305;--gold-pill-border:#3a2a09;--green:#00FF87}
+  [data-theme="light"]{--bg:#fff;--bg-panel:#f5f5f5;--bg-3:#fafafa;--line:#e0e0e0;--line-2:#d4d4d4;--text:#111;--text-strong:#111;--text-secondary:#333;--mute:#666;--gold:#B8760A;--gold-pill-bg:#fff4dc;--gold-pill-border:#d4a443;--green:#00A859}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:14px;transition:background-color .35s,color .35s,opacity .18s}
+  body.leaving{opacity:0}
+  a{color:inherit;text-decoration:none}
+  .topbar{display:flex;align-items:center;gap:24px;padding:18px 28px;border-bottom:1px solid var(--line);background:var(--bg-panel);position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .brand .logo{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.06em;color:var(--gold);line-height:1}
+  .brand .tagline{color:var(--mute);font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+  .powered{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--gold-pill-border);background:var(--gold-pill-bg);border-radius:999px;color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .nav{display:flex;gap:4px;flex:1;justify-content:center}
+  .nav a{padding:10px 18px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.14em;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent}
+  .nav a.active{color:var(--text-strong);border-bottom-color:var(--gold)}
+  .nav a:hover{color:var(--text-strong)}
+  .theme-toggle{width:34px;height:34px;border-radius:8px;background:var(--bg-3);border:1px solid var(--line-2);color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .theme-toggle svg{width:16px;height:16px}
+  .theme-toggle .icon-sun{display:none}
+  [data-theme="light"] .theme-toggle .icon-sun{display:block}
+  [data-theme="light"] .theme-toggle .icon-moon{display:none}
+
+  main{max-width:900px;margin:0 auto;padding:56px 28px}
+  .hero{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);letter-spacing:.04em;margin:0 0 8px;line-height:1}
+  .sub{color:var(--mute);font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:40px}
+  .game{
+    background:var(--bg-panel);border:1px solid var(--line);border-radius:14px;
+    padding:28px 32px;margin-bottom:18px;
+  }
+  .game h2{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text-strong);margin:0 0 10px;letter-spacing:.04em;line-height:1.1;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .game h2 .tag{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--gold);letter-spacing:.14em;padding:3px 8px;border:1px solid var(--gold);border-radius:4px;text-transform:uppercase;line-height:1}
+  .game p{color:var(--text-secondary);line-height:1.6;margin:0 0 16px}
+  .game ul{color:var(--text-secondary);line-height:1.7;padding-left:20px;margin:0 0 16px}
+  .game ul li::marker{color:var(--gold)}
+  .game .cad{color:var(--mute);font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+  .game .cad b{color:var(--gold)}
+  .cta{display:inline-block;background:var(--gold);color:#111;padding:12px 28px;border-radius:999px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.14em;cursor:pointer;border:0;margin-top:14px}
+  [data-theme="light"] .cta{color:#fff}
+  .scoring{background:var(--bg-3);border:1px solid var(--line-2);border-radius:10px;padding:18px;margin:14px 0;font-family:'Rajdhani',sans-serif;font-size:13px}
+  .scoring b{color:var(--gold)}
+  @media (max-width:430px){
+    .topbar{padding:12px 14px;gap:10px;flex-wrap:wrap;row-gap:10px}
+    .brand .logo{font-size:28px}.brand .tagline{display:none}
+    .powered{font-size:9px;padding:4px 8px}
+    .nav{flex:1 1 100%;justify-content:space-between;gap:0}
+    .nav a{padding:8px 4px;font-size:12px}
+    main{padding:32px 16px}
+    .hero{font-size:40px}
+    .game{padding:20px}
+    .game h2{font-size:22px}
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="logo">MOGUL</div><div class="tagline">Hollywood Daily Fantasy</div></div>
+  <a class="powered" href="https://mogul-hype-index-source.github.io/Hype-index/" target="_blank" rel="noopener">⚡ Powered by MoviePass Hype Index</a>
+  <nav class="nav">
+    <a href="index.html">Lobby</a>
+    <a href="my-contests.html">My Contests</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="how-to-play.html" class="active">How to Play</a>
+  </nav>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
+</div>
+
+<main>
+  <div class="hero">HOW TO PLAY</div>
+  <div class="sub">Three game modes · one live index</div>
+
+  <p style="color:var(--mute);line-height:1.6;margin-bottom:32px">
+    Every Mogul contest is scored against the <a href="https://mogul-hype-index-source.github.io/Hype-index/" target="_blank" rel="noopener" style="color:var(--gold)">MoviePass Hype Index</a>,
+    a real-time sentiment dashboard that pulls trailer views, Reddit mentions, Google Trends, and trade
+    publication coverage into a single 0-999 AMSI score. Hype Scores update every 15 minutes. When
+    the scores move, your contest position moves with them.
+  </p>
+
+  <!-- ================ HYPE CALL ================ -->
+  <div class="game">
+    <h2>HYPE CALL <span class="tag">📈 Pick Your Slate</span></h2>
+    <p>
+      The core Mogul game. Pick <b>5 movies</b> from this weekend's theatrical slate plus 2 wildcard
+      upcoming titles. You're scored on the collective AMSI movement of your picks over the contest
+      window.
+    </p>
+    <div class="scoring">
+      <b>Scoring:</b> Sum of (AMSI gain per pick × slot multiplier). Top slot gets 3× weighting, slot 2 gets
+      2×, slots 3-5 get 1×. Wildcards get 1.5× but only count if they hit positive.
+    </div>
+    <ul>
+      <li>Build your lineup before contest lock (usually 30 min before first-release showtime)</li>
+      <li>Watch your slate score update live as trailers drop, reviews land, and social momentum shifts</li>
+      <li>Top 10 cash in tournaments, top 5 in H2H, top half in 50/50</li>
+      <li>Entry fees from $1 to $100 — same rules across all tiers</li>
+    </ul>
+    <div class="cad">Contest cadence · <b>DAILY</b> — locks at 4pm UTC each day</div>
+  </div>
+
+  <!-- ================ HYPE SURGE ================ -->
+  <div class="game">
+    <h2>HYPE SURGE <span class="tag">⚡ Fast · Hourly</span></h2>
+    <p>
+      The quick-fix format. Pick <b>one movie</b> you think will gain the most mentions in the next
+      60 minutes. Mentions include Reddit posts, news headlines that mention the title, and social
+      activity. The biggest mover wins.
+    </p>
+    <div class="scoring">
+      <b>Scoring:</b> Delta in mention count between contest lock and settle. First place takes 60% of
+      the pool, second 25%, third 15%. Ties split.
+    </div>
+    <ul>
+      <li>$1 entry, 10 spots, ~$8.50 payout on most contests</li>
+      <li>New slate posts every hour on the hour — enter up to 5 minutes before lock</li>
+      <li>Perfect if you spot an indie title trending on Reddit or a trailer dropping on X</li>
+      <li>Fastest cash-in-hand game in the lobby</li>
+    </ul>
+    <div class="cad">Contest cadence · <b>HOURLY</b> — top of every hour, all day</div>
+  </div>
+
+  <!-- ================ THE MARQUEE ================ -->
+  <div class="game">
+    <h2>THE MARQUEE <span class="tag">⭐ Weekend Championship</span></h2>
+    <p>
+      The flagship weekend tournament. Larger fields, bigger prize pools, and the full
+      Friday-through-Sunday Hype Score window as your scoring period. Build a slate of <b>7 titles</b>
+      including at least one wildcard from an upcoming film more than 30 days out.
+    </p>
+    <div class="scoring">
+      <b>Scoring:</b> Same multi-slot weighting as Hype Call but averaged across a 72-hour window
+      instead of 24. Box office weekend delta counts double for any title in wide release. Top 15
+      finishers cash in $5 tournaments, top 8 in $25, top 4 in $100.
+    </div>
+    <ul>
+      <li>Opens Friday 00:00 UTC, locks Friday 20:00 UTC, settles Sunday 23:59 UTC</li>
+      <li>Also includes the Box Office Exacta sub-contest: pick the weekend #1 and #2 in order</li>
+      <li>Greyed out Monday-Thursday — you'll see the section in the lobby but can't enter</li>
+      <li>Highest average payouts of any recurring Mogul contest</li>
+    </ul>
+    <div class="cad">Contest cadence · <b>WEEKENDS ONLY</b> — Fri 00:00 UTC through Sun 23:59 UTC</div>
+  </div>
+
+  <a class="cta" href="index.html">← Back to Lobby</a>
+</main>
+
+<script>
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme')||'dark';
+  const next=cur==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',next);
+  try{localStorage.setItem('mogul-theme',next)}catch(_){}
+});
+document.querySelectorAll('.nav a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||a.classList.contains('active'))return;
+    e.preventDefault();document.body.classList.add('leaving');
+    setTimeout(()=>{location.href=a.getAttribute('href')},180);
+  });
+});
+</script>
+</body>
+</html>
