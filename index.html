@@ -83,15 +83,16 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .brand-mark { display: inline-block; text-align: center; line-height: 0.9; }
 .brand-mark .word {
   display: block; font-family: 'Inter', sans-serif; font-weight: 800;
-  font-size: clamp(64px, 12vw, 130px);
+  font-size: clamp(77px, 14.4vw, 156px);   /* +20% */
   color: #fff; letter-spacing: -3px; line-height: 0.9;
 }
 .brand-mark .by {
-  display: block; font-family: 'Inter', sans-serif; font-weight: 500;
-  font-size: clamp(12px, 1.6vw, 17px); color: var(--text-dim);
-  margin-top: 8px; letter-spacing: 0.5px;
+  display: block; font-family: 'Inter', sans-serif; font-weight: 600;
+  font-size: clamp(14px, 1.9vw, 20px);
+  color: #8AA4BE;
+  margin-top: 12px; letter-spacing: 0.6px;
 }
-.brand-mark .by em { font-style: normal; color: var(--text-dim); }
+.brand-mark .by em { font-style: normal; color: #FFFFFF; font-weight: 700; }
 /* nav brand — text only */
 .nav-brand {
   display: inline-flex; align-items: center;
@@ -172,6 +173,35 @@ button { font-family: inherit; cursor: pointer; border: none; }
   transition: all .2s; position: relative;
 }
 .featured-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(245,166,35,0.45); background: #ffbb44; }
+
+/* FEATURED 2-col layout + Avatar franchise leaderboard */
+.featured-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 36px; align-items: start; position: relative; }
+.featured-left { min-width: 0; }
+.franchise-board {
+  background: rgba(10,22,40,0.6); border: 1px solid var(--gold);
+  border-radius: 12px; padding: 18px 20px; backdrop-filter: blur(4px);
+}
+.franchise-board h4 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px;
+  color: var(--gold); margin-bottom: 12px; line-height: 1;
+}
+.franchise-board .row {
+  display: grid; grid-template-columns: 32px 1fr auto; gap: 10px;
+  align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.franchise-board .row:last-child { border-bottom: none; }
+.franchise-board .rank {
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+  color: var(--gold); text-align: center; line-height: 1;
+}
+.franchise-board .row.your .rank { color: var(--green); font-size: 22px; }
+.franchise-board .title { font-size: 12px; color: var(--text); font-weight: 600; line-height: 1.25; }
+.franchise-board .row.your .title { color: var(--green); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.franchise-board .peak { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.franchise-board .row.your .peak { color: var(--green); font-weight: 700; }
+@media (max-width: 800px) {
+  .featured-layout { grid-template-columns: 1fr; gap: 20px; }
+}
 
 /* CONTEST GRID */
 .contest-grid {
@@ -695,18 +725,45 @@ button { font-family: inherit; cursor: pointer; border: none; }
     <div class="section">
       <div class="section-title"><h2>FEATURED <span>CONTEST</span></h2></div>
       <div class="featured">
-        <span class="featured-tag">★ Event of the Week</span>
-        <h3>Franchise Rank: Avatar 4</h3>
-        <p class="desc">Predict where Avatar 4 lands in the franchise's all-time ranking. Settles against the composite Franchise Position Score — opening box office rank within franchise (40%), Hype Score peak (30%), audience sentiment (20%), critical consensus (10%).</p>
-        <div class="featured-grid">
-          <div class="item"><div class="lbl">Entry</div><div class="val">$25</div></div>
-          <div class="item"><div class="lbl">Prize Pool</div><div class="val gold">$2,125</div></div>
-          <div class="item"><div class="lbl">Spots Left</div><div class="val green" id="featSpots">37</div></div>
-          <div class="item"><div class="lbl">Locks In</div><div class="val" id="featTimer">2:48:12</div></div>
-        </div>
-        <button class="featured-btn">ENTER NOW →</button>
-        <div style="margin-top:18px;font-size:10px;color:var(--text-dim);line-height:1.5;max-width:560px;">
-          Ranking contest only. Franchise Position Score is a composite metric. Does not involve standalone prediction of box office revenue. Skill contest · Player vs player · 10% rake · 18+.
+        <div class="featured-layout">
+          <div class="featured-left">
+            <span class="featured-tag">★ Event of the Week</span>
+            <h3>Franchise Rank: Avatar 4</h3>
+            <p class="desc">Predict where Avatar 4 lands in the franchise's all-time ranking. Settles against the composite Franchise Position Score — opening box office rank within franchise (40%), Hype Score peak (30%), audience sentiment (20%), critical consensus (10%).</p>
+            <div class="featured-grid">
+              <div class="item"><div class="lbl">Entry</div><div class="val">$25</div></div>
+              <div class="item"><div class="lbl">Prize Pool</div><div class="val gold">$2,125</div></div>
+              <div class="item"><div class="lbl">Spots Left</div><div class="val green" id="featSpots">37</div></div>
+              <div class="item"><div class="lbl">Locks In</div><div class="val" id="featTimer">2:48:12</div></div>
+            </div>
+            <button class="featured-btn">ENTER NOW →</button>
+            <div style="margin-top:18px;font-size:10px;color:var(--text-dim);line-height:1.5;max-width:560px;">
+              Ranking contest only. Franchise Position Score is a composite metric. Does not involve standalone prediction of box office revenue. Skill contest · Player vs player · 10% rake · 18+.
+            </div>
+          </div>
+          <div class="franchise-board">
+            <h4>AVATAR FRANCHISE · ALL TIME</h4>
+            <div class="row">
+              <div class="rank">1</div>
+              <div class="title">Avatar: The Way of Water</div>
+              <div class="peak">Hype Peak 978</div>
+            </div>
+            <div class="row">
+              <div class="rank">2</div>
+              <div class="title">Avatar (2009)</div>
+              <div class="peak">Hype Peak 967</div>
+            </div>
+            <div class="row">
+              <div class="rank">3</div>
+              <div class="title">Avatar: Fire and Ash</div>
+              <div class="peak">Hype Peak 934</div>
+            </div>
+            <div class="row your">
+              <div class="rank">?</div>
+              <div class="title">Avatar 4</div>
+              <div class="peak">YOUR PICK</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1002,16 +1059,16 @@ function rakeFor(entry) {
 
 const contests = {
   hypeCall: [
-    { name: 'Hype Call H2H',   sub: 'Will the Hype Score rise or fall?', type: 'h2h',   badgeText: 'H2H',   entry: 1,  prize: 1.70, max: 2,  filled: 1,  timer: 7200 },
-    { name: 'Hype Call H2H',   sub: 'Will the Hype Score rise or fall?', type: 'h2h',   badgeText: 'H2H',   entry: 5,  prize: 8.80, max: 2,  filled: 1,  timer: 7200 },
-    { name: 'Hype Call H2H',   sub: 'Will the Hype Score rise or fall?', type: 'h2h',   badgeText: 'H2H',   entry: 25, prize: 45,   max: 2,  filled: 1,  timer: 7200 },
-    { name: 'Hype Call 50/50', sub: 'Top half doubles up',                type: 'fifty', badgeText: '50/50', entry: 5,  prize: 9,    max: 20, filled: 11, timer: 9600, perWinner: true },
-    { name: 'Hype Call GPP',   sub: 'Top 8 cash',                          type: 'tour',  badgeText: 'GPP',   entry: 25, prize: 450,  max: 20, filled: 11, timer: 14400 },
+    { name: 'Hype Call H2H',   film: 'Project Hail Mary',        sub: 'Will Project Hail Mary Hype Score rise or fall?',  type: 'h2h',   badgeText: 'H2H',   entry: 1,  prize: 1.70, max: 2,  filled: 1,  timer: 7200 },
+    { name: 'Hype Call H2H',   film: 'The Drama',                sub: 'Will The Drama Hype Score rise or fall?',          type: 'h2h',   badgeText: 'H2H',   entry: 5,  prize: 8.80, max: 2,  filled: 1,  timer: 7200 },
+    { name: 'Hype Call H2H',   film: 'Michael',                  sub: 'Will Michael Hype Score rise or fall?',            type: 'h2h',   badgeText: 'H2H',   entry: 25, prize: 45,   max: 2,  filled: 1,  timer: 7200 },
+    { name: 'Hype Call 50/50', film: 'Super Mario Galaxy Movie', sub: 'Top half doubles up · Super Mario Galaxy',         type: 'fifty', badgeText: '50/50', entry: 5,  prize: 9,    max: 20, filled: 11, timer: 9600, perWinner: true },
+    { name: 'Hype Call GPP',   film: 'Avengers: Doomsday',       sub: 'Top 8 cash · Avengers: Doomsday',                  type: 'tour',  badgeText: 'GPP',   entry: 25, prize: 450,  max: 20, filled: 11, timer: 14400 },
   ],
   hypeSurge: [
-    { name: 'Hype Surge $1',  sub: 'Most mentions in 60 minutes', type: 'surge', badgeText: 'SURGE', entry: 1,  prize: 8.50, max: 10, filled: 7, timer: 18 },
-    { name: 'Hype Surge $5',  sub: 'Most mentions in 60 minutes', type: 'surge', badgeText: 'SURGE', entry: 5,  prize: 44,   max: 10, filled: 4, timer: 1800 },
-    { name: 'Hype Surge $10', sub: 'Most mentions in 60 minutes', type: 'surge', badgeText: 'SURGE', entry: 10, prize: 88,   max: 10, filled: 6, timer: 1800 },
+    { name: 'Hype Surge $1',  film: 'Sinners',              sub: 'Most mentions in 60 min · Leader: Sinners',              type: 'surge', badgeText: 'SURGE', entry: 1,  prize: 8.50, max: 10, filled: 7, timer: 18 },
+    { name: 'Hype Surge $5',  film: 'The Odyssey',          sub: 'Most mentions in 60 min · Leader: The Odyssey',          type: 'surge', badgeText: 'SURGE', entry: 5,  prize: 44,   max: 10, filled: 4, timer: 1800 },
+    { name: 'Hype Surge $10', film: 'Avatar: Fire and Ash', sub: 'Most mentions in 60 min · Leader: Avatar: Fire and Ash', type: 'surge', badgeText: 'SURGE', entry: 10, prize: 88,   max: 10, filled: 6, timer: 1800 },
   ],
   draft: [
     { name: 'The Draft $5', sub: '5-pick slate · $50K cap', type: 'draft', badgeText: 'DRAFT', entry: 5,  prize: 220, max: 50, filled: 28, timer: 18000 },
@@ -1020,11 +1077,14 @@ const contests = {
   ],
   franchise: [
     { name: 'Franchise Rank: Avatar 4',         sub: 'Where will Jake Sully rank in the Avatar franchise?', type: 'franchise', badgeText: 'RANK', entry: 5,  prize: 220, max: 50, filled: 31, timer: 14400, isFranchise: true,
-      poster: 'AVATAR 4' },
+      poster: 'AVATAR 4',
+      posterUrl: 'https://image.tmdb.org/t/p/w185/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg' },
     { name: 'Franchise Rank: Avengers Doomsday', sub: 'Position of the film vs prior MCU entries',          type: 'franchise', badgeText: 'RANK', entry: 10, prize: 440, max: 50, filled: 22, timer: 18000, isFranchise: true,
-      poster: 'AVENGERS' },
+      poster: 'AVENGERS',
+      posterUrl: 'https://image.tmdb.org/t/p/w185/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg' },
     { name: 'Franchise Rank: Star Wars Starfighter', sub: 'New film vs saga catalog',                        type: 'franchise', badgeText: 'RANK', entry: 25, prize: 450, max: 20, filled: 8,  timer: 21600, isFranchise: true,
-      poster: 'STAR WARS' },
+      poster: 'STAR WARS',
+      posterUrl: 'https://image.tmdb.org/t/p/w185/wqnLdwVXoBjKibFRR5U3y0aDUhs.jpg' },
   ],
   clash: [
     { name: 'Character Clash', sub: '30-day Hype Score momentum', type: 'clash', badgeText: 'CLASH', entry: 5,  prize: 8.80, max: 2, filled: 1, timer: 10800,
@@ -1208,6 +1268,35 @@ function renderCard(c, idx, gridId) {
 function renderGrid(gridId, list) {
   document.getElementById(gridId).innerHTML = list.map((c, i) => renderCard(c, i, gridId)).join('');
 }
+
+// ============ REALISTIC FILL DISTRIBUTION ============
+// 30% FULL, 30% almost (75-95%), 25% filling (40-74%), 15% just opened (10-39%)
+(function distributeFills(){
+  const pool = [];
+  ALL_LISTS().forEach(([gid, list]) => list.forEach((c, i) => {
+    if (!c.unlimited && !c.free) pool.push(c);
+  }));
+  // shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const buckets = [
+    { count: Math.round(pool.length * 0.30), min: 1.00, max: 1.00 }, // FULL
+    { count: Math.round(pool.length * 0.30), min: 0.75, max: 0.95 }, // almost
+    { count: Math.round(pool.length * 0.25), min: 0.40, max: 0.74 }, // filling
+    { count: pool.length, min: 0.10, max: 0.39 },                    // just opened (rest)
+  ];
+  let idx = 0;
+  buckets.forEach(b => {
+    const end = Math.min(idx + b.count, pool.length);
+    for (; idx < end; idx++) {
+      const c = pool[idx];
+      const pct = b.min + Math.random() * (b.max - b.min);
+      c.filled = Math.max(1, Math.min(c.max, Math.round(c.max * pct)));
+    }
+  });
+})();
 
 renderGrid('hypeCallGrid', contests.hypeCall);
 renderGrid('hypeSurgeGrid', contests.hypeSurge);
@@ -1648,18 +1737,7 @@ fetch('https://mogul-hype-index-source.github.io/Hype-index/data/v2.json', { cac
 
 function applyLiveData() {
   if (!liveData || !liveData.movies || !liveData.movies.length) return;
-  const top = liveData.movies[0];
-  const top2 = liveData.movies[1] || top;
-  // Hype Call subtitles use real top film
-  contests.hypeCall.forEach(c => {
-    if (c.badgeText === 'H2H' || c.badgeText === '50/50' || c.badgeText === 'GPP') {
-      c.sub = `Will ${top.title} Hype Score rise or fall today?`;
-    }
-  });
-  // Hype Surge subtitles
-  contests.hypeSurge.forEach(c => {
-    c.sub = `Most mentions in 60 min · Leader: ${top.title}`;
-  });
+  // Per-contest film subtitles are set in the contest data — don't clobber.
 
   // Build poster lookup map by lowercased title
   const posterMap = {};
